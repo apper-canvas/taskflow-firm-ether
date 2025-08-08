@@ -1,59 +1,273 @@
-import categoriesData from "@/services/mockData/categories.json";
+import { toast } from 'react-toastify';
 
-let categories = [...categoriesData];
+// Initialize ApperClient
+const { ApperClient } = window.ApperSDK;
+const apperClient = new ApperClient({
+  apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+  apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+});
 
-const delay = () => new Promise(resolve => setTimeout(resolve, 200));
+const tableName = 'category';
 
 export const categoryService = {
   async getAll() {
-    await delay();
-    return [...categories];
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "Name" } },
+          { field: { Name: "color" } },
+          { field: { Name: "task_count" } },
+          { field: { Name: "Tags" } }
+        ],
+        orderBy: [
+          {
+            fieldName: "Id",
+            sorttype: "ASC"
+          }
+        ]
+      };
+
+      const response = await apperClient.fetchRecords(tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return [];
+      }
+
+      // Handle empty results
+      if (!response.data || response.data.length === 0) {
+        return [];
+      }
+
+      // Transform data to match UI expectations
+      return response.data.map(category => ({
+        Id: category.Id,
+        name: category.Name,
+        color: category.color,
+        taskCount: category.task_count || 0
+      }));
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error fetching categories:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return [];
+    }
   },
 
   async getById(id) {
-    await delay();
-    return categories.find(category => category.Id === parseInt(id));
+    try {
+      const params = {
+        fields: [
+          { field: { Name: "Id" } },
+          { field: { Name: "Name" } },
+          { field: { Name: "color" } },
+          { field: { Name: "task_count" } },
+          { field: { Name: "Tags" } }
+        ]
+      };
+      
+      const response = await apperClient.getRecordById(tableName, parseInt(id), params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        return null;
+      }
+
+      if (!response.data) {
+        return null;
+      }
+
+      // Transform data to match UI expectations
+      return {
+        Id: response.data.Id,
+        name: response.data.Name,
+        color: response.data.color,
+        taskCount: response.data.task_count || 0
+      };
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error(`Error fetching category with ID ${id}:`, error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      return null;
+    }
   },
 
   async create(categoryData) {
-    await delay();
-    const newCategory = {
-      Id: Math.max(...categories.map(c => c.Id), 0) + 1,
-      ...categoryData,
-      taskCount: 0
-    };
-    categories.push(newCategory);
-    return { ...newCategory };
+    try {
+      const params = {
+        records: [{
+          Name: categoryData.name,
+          color: categoryData.color,
+          task_count: 0
+        }]
+      };
+      
+      const response = await apperClient.createRecord(tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulRecords = response.results.filter(result => result.success);
+        const failedRecords = response.results.filter(result => !result.success);
+        
+        if (failedRecords.length > 0) {
+          console.error(`Failed to create category ${failedRecords.length} records:${JSON.stringify(failedRecords)}`);
+          
+          failedRecords.forEach(record => {
+            record.errors?.forEach(error => {
+              toast.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successfulRecords.length > 0) {
+          const data = successfulRecords[0].data;
+          return {
+            Id: data.Id,
+            name: data.Name,
+            color: data.color,
+            taskCount: data.task_count || 0
+          };
+        }
+      }
+      
+      throw new Error("Failed to create category");
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error creating category:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
+    }
   },
 
   async update(id, updates) {
-    await delay();
-    const index = categories.findIndex(category => category.Id === parseInt(id));
-    if (index !== -1) {
-      categories[index] = { ...categories[index], ...updates };
-      return { ...categories[index] };
+    try {
+      const updateData = {
+        Id: parseInt(id)
+      };
+
+      // Map UI field names to database field names
+      if (updates.name !== undefined) updateData.Name = updates.name;
+      if (updates.color !== undefined) updateData.color = updates.color;
+      if (updates.taskCount !== undefined) updateData.task_count = updates.taskCount;
+
+      const params = {
+        records: [updateData]
+      };
+      
+      const response = await apperClient.updateRecord(tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulUpdates = response.results.filter(result => result.success);
+        const failedUpdates = response.results.filter(result => !result.success);
+        
+        if (failedUpdates.length > 0) {
+          console.error(`Failed to update category ${failedUpdates.length} records:${JSON.stringify(failedUpdates)}`);
+          
+          failedUpdates.forEach(record => {
+            record.errors?.forEach(error => {
+              toast.error(`${error.fieldLabel}: ${error.message}`);
+            });
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        if (successfulUpdates.length > 0) {
+          const data = successfulUpdates[0].data;
+          return {
+            Id: data.Id,
+            name: data.Name,
+            color: data.color,
+            taskCount: data.task_count || 0
+          };
+        }
+      }
+      
+      throw new Error("Failed to update category");
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error updating category:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
     }
-    throw new Error("Category not found");
   },
 
   async delete(id) {
-    await delay();
-    const index = categories.findIndex(category => category.Id === parseInt(id));
-    if (index !== -1) {
-      const deletedCategory = categories[index];
-      categories.splice(index, 1);
-      return deletedCategory;
+    try {
+      const params = {
+        RecordIds: [parseInt(id)]
+      };
+      
+      const response = await apperClient.deleteRecord(tableName, params);
+      
+      if (!response.success) {
+        console.error(response.message);
+        toast.error(response.message);
+        throw new Error(response.message);
+      }
+      
+      if (response.results) {
+        const successfulDeletions = response.results.filter(result => result.success);
+        const failedDeletions = response.results.filter(result => !result.success);
+        
+        if (failedDeletions.length > 0) {
+          console.error(`Failed to delete category ${failedDeletions.length} records:${JSON.stringify(failedDeletions)}`);
+          
+          failedDeletions.forEach(record => {
+            if (record.message) toast.error(record.message);
+          });
+        }
+        
+        return successfulDeletions.length > 0;
+      }
+      
+      return true;
+    } catch (error) {
+      if (error?.response?.data?.message) {
+        console.error("Error deleting category:", error?.response?.data?.message);
+      } else {
+        console.error(error.message);
+      }
+      throw error;
     }
-    throw new Error("Category not found");
   },
 
   async updateTaskCount(categoryName, count) {
-    await delay();
-    const category = categories.find(c => c.name === categoryName);
-    if (category) {
-      category.taskCount = count;
-      return { ...category };
+    try {
+      // First find the category by name
+      const allCategories = await this.getAll();
+      const category = allCategories.find(c => c.name === categoryName);
+      
+      if (category) {
+        return await this.update(category.Id, { taskCount: count });
+      }
+      
+      return null;
+    } catch (error) {
+      console.error("Error updating task count:", error);
+      return null;
     }
-    return null;
   }
 };

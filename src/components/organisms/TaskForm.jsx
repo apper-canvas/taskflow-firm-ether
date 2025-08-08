@@ -25,14 +25,17 @@ const TaskForm = ({
   });
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
+useEffect(() => {
     if (task) {
+      // Handle category lookup - task.category might be an object or string
+      const taskCategoryName = task.category?.Name || task.category || "work";
+      
       setFormData({
         title: task.title || "",
         description: task.description || "",
         priority: task.priority || "medium",
-        category: task.category || "work",
-        dueDate: task.dueDate || ""
+        category: taskCategoryName,
+        dueDate: task.due_date || ""
       });
     }
   }, [task]);

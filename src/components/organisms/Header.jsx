@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
+import { useContext } from 'react';
 import SearchBar from "@/components/molecules/SearchBar";
 import Button from "@/components/atoms/Button";
 import ApperIcon from "@/components/ApperIcon";
+import { AuthContext } from '../../App';
 
 const Header = ({ 
   onSearch, 
@@ -11,6 +13,13 @@ const Header = ({
   completedTasks = 0 
 }) => {
   const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  const { logout } = useContext(AuthContext);
+  
+  const handleLogout = async () => {
+    if (confirm('Are you sure you want to log out?')) {
+      await logout();
+    }
+  };
 
   return (
     <motion.header
@@ -42,7 +51,7 @@ const Header = ({
             </div>
           </div>
 
-          {/* Search and Actions */}
+{/* Search and Actions */}
           <div className="flex items-center gap-4">
             {/* Search Bar */}
             <div className="hidden sm:block w-80">
@@ -61,6 +70,16 @@ const Header = ({
             >
               <ApperIcon name="Plus" className="w-4 h-4" />
               <span className="hidden sm:inline">Add Task</span>
+            </Button>
+
+            {/* Logout Button */}
+            <Button
+              variant="secondary"
+              onClick={handleLogout}
+              className="gap-2 shadow-md hover:shadow-lg"
+            >
+              <ApperIcon name="LogOut" className="w-4 h-4" />
+              <span className="hidden sm:inline">Logout</span>
             </Button>
           </div>
         </div>

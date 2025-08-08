@@ -47,12 +47,13 @@ const TaskCard = ({
     }
   };
 
-  const category = categories.find(c => c.name === task.category);
+// Handle category lookup - task.category might be an object or string
+  const taskCategoryName = task.category?.Name || task.category;
+  const category = categories.find(c => c.name === taskCategoryName);
   const categoryColor = category?.color || "#5B47E0";
 
-  const isOverdue = task.dueDate && isPast(parseISO(task.dueDate)) && !task.completed;
-  const isDueToday = task.dueDate && isToday(parseISO(task.dueDate));
-
+  const isOverdue = task.due_date && isPast(parseISO(task.due_date)) && !task.completed;
+  const isDueToday = task.due_date && isToday(parseISO(task.due_date));
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -128,16 +129,16 @@ const TaskCard = ({
           {/* Tags and Due Date */}
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <PriorityBadge priority={task.priority} />
+<PriorityBadge priority={task.priority} />
               <CategoryTag 
-                category={task.category}
+                category={taskCategoryName}
                 color={categoryColor}
                 showIcon={false}
               />
             </div>
 
-            {/* Due Date */}
-            {task.dueDate && (
+{/* Due Date */}
+            {task.due_date && (
               <div className={cn(
                 "flex items-center gap-1 text-body-sm",
                 isOverdue && !task.completed && "text-accent-600 font-medium",
@@ -150,7 +151,7 @@ const TaskCard = ({
                   className="w-4 h-4" 
                 />
                 <span>
-                  {isDueToday ? "Due today" : format(parseISO(task.dueDate), "MMM dd")}
+                  {isDueToday ? "Due today" : format(parseISO(task.due_date), "MMM dd")}
                   {isOverdue && !task.completed && " (Overdue)"}
                 </span>
               </div>

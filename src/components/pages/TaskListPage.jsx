@@ -12,7 +12,7 @@ import { categoryService } from "@/services/api/categoryService";
 
 const TaskListPage = () => {
   // State management
-  const [tasks, setTasks] = useState([]);
+const [tasks, setTasks] = useState([]);
   const [categories, setCategories] = useState([]);
   const [filteredTasks, setFilteredTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +59,7 @@ const TaskListPage = () => {
     }
   };
 
-  const filterTasks = () => {
+const filterTasks = () => {
     let filtered = [...tasks];
 
     // Apply search filter
@@ -73,7 +73,11 @@ const TaskListPage = () => {
 
     // Apply URL-based filters
     if (categoryName) {
-      filtered = filtered.filter(task => task.category === categoryName);
+      // Handle category lookup - compare with category name from lookup object or direct string
+      filtered = filtered.filter(task => {
+        const taskCategory = task.category?.Name || task.category;
+        return taskCategory === categoryName;
+      });
     } else if (priorityLevel) {
       filtered = filtered.filter(task => task.priority === priorityLevel);
     } else {
@@ -82,13 +86,13 @@ const TaskListPage = () => {
       switch (path) {
         case "/today":
           filtered = filtered.filter(task => 
-            task.dueDate && isToday(parseISO(task.dueDate)) && !task.completed
+            task.due_date && isToday(parseISO(task.due_date)) && !task.completed
           );
           break;
         case "/overdue":
           filtered = filtered.filter(task => {
-            if (!task.dueDate || task.completed) return false;
-            const dueDate = parseISO(task.dueDate);
+            if (!task.due_date || task.completed) return false;
+            const dueDate = parseISO(task.due_date);
             return isPast(dueDate) && !isToday(dueDate);
           });
           break;
@@ -97,8 +101,8 @@ const TaskListPage = () => {
           break;
         case "/upcoming":
           filtered = filtered.filter(task => {
-            if (!task.dueDate || task.completed) return false;
-            const dueDate = parseISO(task.dueDate);
+            if (!task.due_date || task.completed) return false;
+            const dueDate = parseISO(task.due_date);
             return !isPast(dueDate) || isToday(dueDate);
           });
           break;
@@ -116,14 +120,14 @@ const TaskListPage = () => {
       if (priorityDiff !== 0) return priorityDiff;
 
       // Due date order (nulls last)
-      if (a.dueDate && b.dueDate) {
-        return new Date(a.dueDate) - new Date(b.dueDate);
+      if (a.due_date && b.due_date) {
+        return new Date(a.due_date) - new Date(b.due_date);
       }
-      if (a.dueDate) return -1;
-      if (b.dueDate) return 1;
+      if (a.due_date) return -1;
+      if (b.due_date) return 1;
 
       // Created date order (newest first)
-      return new Date(b.createdAt) - new Date(a.createdAt);
+      return new Date(b.created_at) - new Date(a.created_at);
     });
 
     setFilteredTasks(filtered);
@@ -207,17 +211,17 @@ const TaskListPage = () => {
   };
 
   // Calculate task counts for stats and filters
-  const taskCounts = {
+const taskCounts = {
     total: tasks.length,
     completed: tasks.filter(task => task.completed).length,
     pending: tasks.filter(task => !task.completed).length,
     overdue: tasks.filter(task => {
-      if (!task.dueDate || task.completed) return false;
-      const dueDate = parseISO(task.dueDate);
+      if (!task.due_date || task.completed) return false;
+      const dueDate = parseISO(task.due_date);
       return isPast(dueDate) && !isToday(dueDate);
     }).length,
     today: tasks.filter(task => 
-      task.dueDate && isToday(parseISO(task.dueDate)) && !task.completed
+      task.due_date && isToday(parseISO(task.due_date)) && !task.completed
     ).length
   };
 
