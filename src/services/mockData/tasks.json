@@ -1,0 +1,98 @@
+[
+  {
+    "Id": 1,
+    "title": "Review Q4 marketing campaign",
+    "description": "Analyze performance metrics and prepare recommendations for the upcoming quarterly review meeting.",
+    "priority": "high",
+    "category": "work",
+    "dueDate": "2024-01-25",
+    "completed": false,
+    "createdAt": "2024-01-20T09:00:00Z",
+    "completedAt": null,
+    "archived": false
+  },
+  {
+    "Id": 2,
+    "title": "Schedule dentist appointment",
+    "description": "Book routine cleaning and checkup for next month.",
+    "priority": "medium",
+    "category": "personal",
+    "dueDate": "2024-01-28",
+    "completed": false,
+    "createdAt": "2024-01-19T14:30:00Z",
+    "completedAt": null,
+    "archived": false
+  },
+  {
+    "Id": 3,
+    "title": "Prepare client presentation",
+    "description": "Create slides for the new project proposal, including timeline and budget breakdown.",
+    "priority": "high",
+    "category": "work",
+    "dueDate": "2024-01-24",
+    "completed": false,
+    "createdAt": "2024-01-18T11:15:00Z",
+    "completedAt": null,
+    "archived": false
+  },
+  {
+    "Id": 4,
+    "title": "Submit expense reports",
+    "description": "Compile and submit all business expenses from the past month.",
+    "priority": "medium",
+    "category": "work",
+    "dueDate": "2024-01-30",
+    "completed": true,
+    "createdAt": "2024-01-15T16:45:00Z",
+    "completedAt": "2024-01-22T10:30:00Z",
+    "archived": false
+  },
+  {
+    "Id": 5,
+    "title": "Plan weekend grocery shopping",
+    "description": "Make a list and plan meals for the upcoming week.",
+    "priority": "low",
+    "category": "personal",
+    "dueDate": "2024-01-27",
+    "completed": false,
+    "createdAt": "2024-01-21T19:20:00Z",
+    "completedAt": null,
+    "archived": false
+  },
+  {
+    "Id": 6,
+    "title": "Fix homepage bug",
+    "description": "Resolve the mobile responsive issue on the main landing page.",
+    "priority": "high",
+    "category": "urgent",
+    "dueDate": "2024-01-23",
+    "completed": false,
+    "createdAt": "2024-01-22T08:00:00Z",
+    "completedAt": null,
+    "archived": false
+  },
+  {
+    "Id": 7,
+    "title": "Team standup meeting",
+    "description": "Weekly team sync to discuss progress and blockers.",
+    "priority": "medium",
+    "category": "work",
+    "dueDate": "2024-01-24",
+    "completed": true,
+    "createdAt": "2024-01-20T07:30:00Z",
+    "completedAt": "2024-01-24T09:00:00Z",
+    "archived": false
+  },
+  {
+    "Id": 8,
+    "title": "Update portfolio website",
+    "description": "Add recent projects and update the about section.",
+    "priority": "low",
+    "category": "personal",
+    "dueDate": null,
+    "completed": false,
+    "createdAt": "2024-01-17T13:45:00Z",
+    "completedAt": null,
+    "archived": false
+  }
+]

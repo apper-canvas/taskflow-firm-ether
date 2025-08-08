@@ -1,0 +1,100 @@
+@import "react-toastify/dist/ReactToastify.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Inter", system-ui, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent;
+  }
+  
+  .gradient-bg {
+    @apply bg-gradient-to-br from-primary-500 via-secondary-500 to-primary-600;
+  }
+  
+  .glass-effect {
+    @apply bg-white/90 backdrop-blur-sm border border-white/20;
+  }
+  
+  .task-card-hover {
+    @apply transform transition-all duration-200 ease-out hover:scale-[1.02] hover:shadow-task-hover;
+  }
+}
+
+/* Toast Customization */
+.Toastify__toast-container {
+  @apply top-4 right-4 w-auto min-w-[320px] max-w-[420px];
+}
+
+.Toastify__toast {
+  @apply rounded-lg shadow-elevated font-body text-body-sm;
+}
+
+.Toastify__toast--success {
+  @apply bg-white border-l-4 border-success-500 text-gray-800;
+}
+
+.Toastify__toast--error {
+  @apply bg-white border-l-4 border-accent-500 text-gray-800;
+}
+
+.Toastify__toast--info {
+  @apply bg-white border-l-4 border-info-500 text-gray-800;
+}
+
+.Toastify__progress-bar {
+  @apply h-1;
+}
+
+.Toastify__progress-bar--success {
+  @apply bg-success-500;
+}
+
+.Toastify__progress-bar--error {
+  @apply bg-accent-500;
+}
+
+.Toastify__progress-bar--info {
+  @apply bg-info-500;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+/* Priority Badge Animations */
+.priority-high {
+  @apply animate-pulse;
+}
+
+/* Completion Animation */
+.task-completed {
+  @apply opacity-60;
+}
+
+.task-completed .task-title {
+  @apply line-through;
+}

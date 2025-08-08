@@ -1,0 +1,20 @@
+[
+  {
+    "Id": 1,
+    "name": "work",
+    "color": "#5B47E0",
+    "taskCount": 4
+  },
+  {
+    "Id": 2,
+    "name": "personal",
+    "color": "#4ECDC4",
+    "taskCount": 3
+  },
+  {
+    "Id": 3,
+    "name": "urgent",
+    "color": "#FF6B6B",
+    "taskCount": 1
+  }
+]
